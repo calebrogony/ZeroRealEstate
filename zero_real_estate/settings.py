@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-z6r=!ce&=i*=*^h%fic14_4ph%_%lf3-h$=me6f*zlwx%5#2kl
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['zerorealestate.onrender.com']
 
 
 # Application definition
