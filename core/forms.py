@@ -42,3 +42,8 @@ class CustomUserCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+class PasswordRecoveryForm(forms.Form):
+    id_copy = forms.FileField(required=True, label="Upload ID Copy")
+    mobile_number = forms.CharField(max_length=15, label="Mobile Number")
+    email = forms.EmailField(label="Email Address")
+

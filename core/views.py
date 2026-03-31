@@ -66,16 +66,33 @@ def verify_account(request):
     return render(request, "verify_account.html")
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth import update_session_auth_hash
+
+User = get_user_model()
+
 def reset_password(request):
     user_id = request.session.get("reset_user_id")
     user = get_object_or_404(User, id=user_id)
 
     if request.method == "POST":
         new_password = request.POST.get("password")
-        user.set_password(new_password)
-        user.save()
-        messages.success(request, "Password reset successful! Please log in.")
-        return redirect("login")
+        confirm_password = request.POST.get("confirm_password")
+
+        if not new_password or not confirm_password:
+            messages.error(request, "Please fill in both password fields.")
+        elif new_password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+        else:
+            user.set_password(new_password)
+            user.save()
+            # Keep the user logged in if they were already authenticated
+            update_session_auth_hash(request, user)
+            messages.success(request, "Password reset successful! Please log in.")
+            return redirect("login")
+
     return render(request, "reset_password.html")
 
 
