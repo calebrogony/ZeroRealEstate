@@ -73,27 +73,35 @@ from django.contrib.auth import update_session_auth_hash
 
 User = get_user_model()
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import RecoveryRequest
+
 def reset_password(request):
-    user_id = request.session.get("reset_user_id")
-    user = get_object_or_404(User, id=user_id)
+    verified = request.session.get("verified", False)
 
     if request.method == "POST":
-        new_password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm_password")
+        if not verified:
+            # First step: collect verification details
+            id_number = request.POST.get("id_number")
+            mobile_number = request.POST.get("mobile_number")
+            email = request.POST.get("email")
 
-        if not new_password or not confirm_password:
-            messages.error(request, "Please fill in both password fields.")
-        elif new_password != confirm_password:
-            messages.error(request, "Passwords do not match.")
+            # Save to DB for admin review
+            RecoveryRequest.objects.create(
+                id_number=id_number,
+                mobile_number=mobile_number,
+                email=email
+            )
+
+            # Mark session as verified so template shows "await call"
+            request.session["verified"] = True
+            messages.success(request, "Verification submitted. Await call from agent within 10 minutes.")
         else:
-            user.set_password(new_password)
-            user.save()
-            # Keep the user logged in if they were already authenticated
-            update_session_auth_hash(request, user)
-            messages.success(request, "Password reset successful! Please log in.")
-            return redirect("login")
+            # Later you can add actual password reset logic here
+            messages.info(request, "Please await agent verification before resetting password.")
 
-    return render(request, "reset_password.html")
+    return render(request, "reset_password.html", {"verified": request.session.get("verified", False)})
 
 
 # ==========================

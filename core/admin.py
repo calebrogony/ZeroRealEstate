@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
 from .models import Property, Investment, Clan, Wallet, LedgerEntry, VerifyTransaction, Message, Staff
+from .models import RecoveryRequest
 
 User = get_user_model()
 
@@ -55,3 +56,9 @@ class MessageAdmin(admin.ModelAdmin):
 
 # Custom User
 admin.site.register(User, UserAdmin)
+
+@admin.register(RecoveryRequest)
+class RecoveryRequestAdmin(admin.ModelAdmin):
+    list_display = ("id_number", "mobile_number", "email", "status", "submitted_at")
+    list_filter = ("status", "submitted_at")
+    search_fields = ("id_number", "mobile_number", "email")
