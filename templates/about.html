@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Contact Us Button -->
+<div style="margin-bottom:20px;">
+  <a href="{% url 'contact_us' %}"
+     class="logout-btn"
+     style="background:#00ff88; color:black; padding:10px 20px; border-radius:8px; text-decoration:none;">
+     Contact Us
+  </a>
+</div>
+
+<h1 class="warzone-title">ABOUT ZERO REAL ESTATE HOLDINGS</h1>
+
+<div class="warzone-card">
+    <h2>Mission</h2>
+    <p>
+      Zero Real Estate Holdings is a tactical investment platform designed to empower investors with fractional ownership of premium properties. Our mission is to democratize real estate by lowering entry barriers, enabling participants to deploy capital strategically, and grow wealth through collective ownership.
+    </p>
+</div>
+
+<div class="warzone-card">
+    <h2>How It Works</h2>
+    <ul>
+      <li><strong>Browse Listings</strong> – Explore curated property opportunities vetted for quality and growth potential.</li>
+      <li><strong>Buy Shares</strong> – Invest in fractional units of premium assets without needing full ownership capital.</li>
+      <li><strong>Earn Equity Growth</strong> – Watch your investment appreciate as property values increase.</li>
+      <li><strong>Prestige Ranking</strong> – Gain recognition and status within the community as your portfolio expands.</li>
+      <li><strong>Community Engagement</strong> – Collaborate with other investors, share insights, and build networks.</li>
+    </ul>
+</div>
+
+<div class="warzone-card">
+    <h2>Vision</h2>
+    <p>
+      We envision a powerful investment ecosystem driven by strategy, transparency, and community. By combining technology with financial innovation, we aim to create a platform where investors not only grow wealth but also build prestige and influence in the real estate sector.
+    </p>
+</div>
+
+<!-- Staff Section -->
+<div class="warzone-card">
+    <h2>Our Team</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:20px;">
+        {% for staff in staff_members %}
+        <div style="background:#1f1f1f; padding:20px; border-radius:12px; text-align:center;">
+            {% if staff.photo %}
+                <img src="{{ staff.photo.url }}" alt="{{ staff.full_name }}"
+                     style="width:100px; height:100px; border-radius:50%; margin-bottom:10px;">
+            {% endif %}
+            <h3 style="color:#00ff88; margin:0;">{{ staff.full_name }}</h3>
+            <p style="color:#bbb; margin:5px 0;">{{ staff.role }}</p>
+            {% if staff.portfolio_summary %}
+                <p style="font-size:14px; color:#ccc;">{{ staff.portfolio_summary }}</p>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>No staff members added yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

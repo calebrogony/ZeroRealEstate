@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Wallet - Zero Real Estate</title>
+<meta charset="UTF-8">
+
+<style>
+body {
+    margin:0;
+    background:#0f0f0f;
+    font-family:'Segoe UI',sans-serif;
+    color:white;
+    display:flex;
+}
+.sidebar {
+    width:220px;
+    background:#181818;
+    height:100vh;
+    padding:20px;
+}
+.sidebar a {
+    display:block;
+    padding:10px 0;
+    color:white;
+    text-decoration:none;
+}
+.sidebar a:hover {
+    color:#00ff88;
+}
+.content {
+    flex:1;
+    padding:30px;
+}
+.card {
+    background:#1f1f1f;
+    padding:25px;
+    border-radius:16px;
+    margin-bottom:20px;
+}
+.balance {
+    font-size:32px;
+    color:#00ff88;
+    font-weight:bold;
+    margin:20px 0;
+}
+button {
+    background:#00aa66;
+    border:none;
+    padding:12px 18px;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+    margin-right:10px;
+}
+button:hover {
+    background:#00cc77;
+}
+.ledger-table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+.ledger-table th, .ledger-table td {
+    padding:10px;
+    border-bottom:1px solid #333;
+    text-align:left;
+}
+.ledger-table th {
+    color:#00ff88;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h3>Zero RE</h3>
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'portfolio' %}">Investor Hub</a>
+    <a href="{% url 'listings' %}">Listings</a>
+    <a href="{% url 'prestige' %}">Prestige</a>
+    <a href="{% url 'community' %}">Clan / Community</a>
+    <hr style="border:1px solid #333;">
+    <a href="{% url 'wallet' %}">Wallet</a>
+    <a href="{% url 'deposit' %}">Deposit Funds</a>
+    <a href="{% url 'withdraw' %}">Withdraw Funds</a>
+</div>
+
+<div class="content">
+    <h2>Your Wallet</h2>
+
+    <!-- Balance Card -->
+    <div class="card">
+        <p>Current Balance</p>
+        <div class="balance">${{ wallet.balance }}</div>
+
+        <p>Use your wallet to buy property shares and build your real estate portfolio.</p>
+
+        <br>
+
+        <a href="{% url 'deposit' %}">
+            <button>Deposit Funds</button>
+        </a>
+
+        <a href="{% url 'withdraw' %}">
+            <button>Withdraw Funds</button>
+        </a>
+    </div>
+
+    <!-- Ledger History -->
+    <div class="card">
+        <h3>Transaction History</h3>
+        <table class="ledger-table">
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Fee</th>
+                <th>Description</th>
+            </tr>
+            {% for entry in transactions %}
+            <tr>
+                <td>{{ entry.created_at|date:"Y-m-d H:i" }}</td>
+                <td>{{ entry.get_transaction_type_display }}</td>
+                <td>${{ entry.amount }}</td>
+                <td>${{ entry.fee }}</td>
+                <td>{{ entry.description }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No transactions yet.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

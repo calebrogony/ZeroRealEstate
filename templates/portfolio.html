@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Investor Hub - Zero RE</title>
+<meta charset="UTF-8">
+<style>
+body {
+    margin:0;
+    background:#0f0f0f; /* full dark background */
+    font-family:'Segoe UI',sans-serif;
+    color:white;
+    display:flex;
+}
+/* SIDEBAR */
+.sidebar {
+    width:220px;
+    background:#181818;
+    height:100vh;
+    padding:20px;
+}
+.sidebar a {
+    display:block;
+    padding:10px 0;
+    color:white;
+    text-decoration:none;
+}
+.sidebar a:hover {
+    color:#00ff88;
+}
+/* CONTENT */
+.content {
+    flex:1;
+    padding:30px;
+}
+/* TOP BAR */
+.topbar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+.logout-btn {
+    background:#e60023;
+    padding:8px 15px;
+    border-radius:8px;
+    text-decoration:none;
+    color:white;
+}
+/* CARDS */
+.card {
+    background:#1f1f1f;
+    padding:22px;
+    border-radius:16px;
+    margin-top:20px;
+}
+.highlight {
+    color:#00ff88;
+    font-weight:bold;
+}
+/* STATS GRID */
+.stats-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-top:20px;
+}
+.stat-box {
+    background:#1f1f1f;
+    padding:20px;
+    border-radius:14px;
+    text-align:center;
+}
+.stat-box h4 {
+    margin:0;
+    font-size:14px;
+    color:#bbb;
+}
+.stat-box p {
+    font-size:22px;
+    margin-top:8px;
+    color:#00ff88;
+    font-weight:bold;
+}
+/* INVESTMENTS */
+.investment {
+    background:#1f1f1f;
+    padding:20px;
+    border-radius:16px;
+    margin-bottom:20px;
+}
+.sell-btn {
+    background:#e60023;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+    margin-top:10px;
+}
+.sell-btn:hover {
+    background:#ff3333;
+}
+input {
+    padding:6px;
+    border-radius:6px;
+    border:none;
+    margin-top:8px;
+    background:#2a2a2a;
+    color:white;
+}
+/* Property Images */
+.property-images {
+    background:#1f1f1f;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #333;
+    display:flex;
+    gap:12px;
+    margin:15px 0;
+}
+.property-images img {
+    width:160px;
+    height:110px;
+    object-fit:cover;
+    border-radius:8px;
+    border:1px solid #333;
+}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <h3>Zero RE</h3>
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <a href="{% url 'portfolio' %}">Investor Hub</a>
+  <a href="{% url 'listings' %}">Listings</a>
+  <a href="{% url 'prestige' %}">Prestige</a>
+  <a href="{% url 'community' %}">Clan / Community</a>
+  <hr style="border:1px solid #333;">
+  <a href="{% url 'wallet' %}">Wallet</a>
+  <a href="{% url 'deposit' %}">Deposit</a>
+</div>
+
+<div class="content">
+  <!-- Topbar -->
+  <div class="topbar">
+    <h2 style="color:#00ff88;">Your Investor Hub</h2>
+    <div>
+      <p><strong>Prestige Level:</strong> {{ user.prestige_level }}</p>
+      <p><strong>Equity Percentage:</strong> {{ user.equity_percentage }}%</p>
+    </div>
+    <a class="logout-btn" href="{% url 'logout' %}">Logout</a>
+  </div>
+
+  <!-- Portfolio Stats -->
+  <div class="stats-grid">
+    <div class="stat-box"><h4>Wallet Balance</h4><p>${{ wallet.balance }}</p></div>
+    <div class="stat-box"><h4>Total Shares</h4><p>{{ total_shares }}</p></div>
+    <div class="stat-box"><h4>Total Invested</h4><p>${{ total_invested }}</p></div>
+    <div class="stat-box"><h4>Monthly Income</h4><p>${{ monthly_income|floatformat:2 }}</p></div>
+  </div>
+
+  <!-- Investor Profile -->
+  <div class="card">
+    <h3 style="color:#00ff88;">Welcome {{ user.username }}</h3>
+    <p><strong>Investor Rank:</strong>
+      {% if user.prestige_level <= 2 %}🟤 Bronze Investor
+      {% elif user.prestige_level <= 4 %}⚪ Silver Investor
+      {% elif user.prestige_level <= 6 %}🟡 Gold Investor
+      {% else %}💎 Diamond Investor{% endif %}
+    </p>
+    <hr style="border:1px solid #333; margin:15px 0;">
+    <p><strong>Total Holdings Value:</strong> <span class="highlight">${{ total_invested }}</span></p>
+    <p><strong>Estimated Monthly Income:</strong> <span class="highlight">${{ monthly_income|floatformat:2 }}</span></p>
+    <p><strong>Clan:</strong>{% if user_clan %}{{ user_clan.name }}{% else %}None{% endif %}</p>
+    <p><strong>Black Card Status:</strong>{% if user.black_card %}<span class="highlight">Active</span>{% else %}Not Unlocked{% endif %}</p>
+  </div>
+
+  <!-- Investments List -->
+  {% for investment in investments %}
+  <div class="investment">
+    <h3 style="color:#00ff88;">{{ investment.property_obj.name }}</h3>
+    <p>Location: {{ investment.property_obj.location }}</p>
+    <p>Shares Owned: <strong>{{ investment.shares_bought }}</strong></p>
+    <p>Total Invested: <strong>${{ investment.total_invested }}</strong></p>
+    <p>Price Per Share: ${{ investment.property_obj.price_per_share }}</p>
+    <p>Investment Date: {{ investment.date_invested }}</p>
+
+
+  <!-- Property Images -->
+<div class="property-images">
+  {% if investment.property_obj.image1 %}
+    <a href="{{ investment.property_obj.image1.url }}" target="_blank">
+      <img src="{{ investment.property_obj.image1.url }}" alt="{{ investment.property_obj.name }}">
+    </a>
+  {% endif %}
+  {% if investment.property_obj.image2 %}
+    <a href="{{ investment.property_obj.image2.url }}" target="_blank">
+      <img src="{{ investment.property_obj.image2.url }}" alt="{{ investment.property_obj.name }}">
+    </a>
+  {% endif %}
+  {% if investment.property_obj.image3 %}
+    <a href="{{ investment.property_obj.image3.url }}" target="_blank">
+      <img src="{{ investment.property_obj.image3.url }}" alt="{{ investment.property_obj.name }}">
+    </a>
+  {% endif %}
+</div>
+
+
+    <!-- Liquidate Form -->
+    <form method="POST" action="{% url 'liquidate' investment.id %}">
+      {% csrf_token %}
+      <input type="number" name="shares" placeholder="Shares to Sell" min="1" max="{{ investment.shares_bought }}">
+      <button class="sell-btn" type="submit">🔥 Sell Shares</button>
+    </form>
+  </div>
+  {% empty %}
+  <p>You have not invested yet.</p>
+  {% endfor %}
+</div>
+</body>
+</html>

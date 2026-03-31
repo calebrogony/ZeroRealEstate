@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard - Zero Real Estate Holdings</title>
+<meta charset="UTF-8">
+
+<style>
+body {
+    margin:0;
+    background:#0f0f0f;
+    font-family:'Segoe UI',sans-serif;
+    color:white;
+    display:flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width:240px;
+    background:#181818;
+    height:100vh;
+    padding:25px;
+    box-sizing:border-box;
+}
+.sidebar h3 {
+    margin-bottom:30px;
+    font-size:18px;
+    line-height:1.4;
+}
+.sidebar a {
+    display:block;
+    padding:10px 0;
+    color:white;
+    text-decoration:none;
+    font-size:15px;
+}
+.sidebar a:hover {
+    color:#00ff88;
+}
+
+/* CONTENT */
+.content {
+    flex:1;
+    padding:35px;
+}
+
+/* TOP BAR */
+.topbar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+.logout-btn {
+    background:#e60023;
+    padding:8px 15px;
+    border-radius:8px;
+    text-decoration:none;
+    color:white;
+}
+
+/* CARDS */
+.card {
+    background:#1f1f1f;
+    padding:22px;
+    border-radius:16px;
+    margin-top:20px;
+}
+.card h3 {
+    margin-top:0;
+    margin-bottom:15px;
+}
+.highlight {
+    color:#00ff88;
+    font-weight:bold;
+}
+
+/* GRID STATS */
+.stats-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-top:20px;
+}
+.stat-box {
+    background:#1f1f1f;
+    padding:20px;
+    border-radius:14px;
+    text-align:center;
+}
+.stat-box h4 {
+    margin:0;
+    font-size:14px;
+    color:#bbb;
+}
+.stat-box p {
+    font-size:22px;
+    margin-top:8px;
+    color:#00ff88;
+    font-weight:bold;
+}
+
+/* ACTION BUTTONS */
+.action-buttons {
+    margin-top:20px;
+}
+.action-btn {
+    background:#00aa66;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+    margin-right:10px;
+    font-size:14px;
+}
+.action-btn:hover {
+    background:#00cc77;
+}
+
+/* INBOX TABLE */
+.inbox-table {
+    width:100%;
+    border-collapse:collapse;
+}
+.inbox-table th, .inbox-table td {
+    padding:10px;
+    border-bottom:1px solid #333;
+    text-align:left;
+}
+.inbox-table th {
+    color:#00ff88;
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h3>Zero Real Estate<br>Holdings</h3>
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'portfolio' %}">Investor Hub</a>
+    <a href="{% url 'listings' %}">Listings</a>
+    <a href="{% url 'prestige' %}">Prestige</a>
+    <a href="{% url 'community' %}">Clan / Community</a>
+    <a href="{% url 'wallet' %}">Wallet</a>
+    <a href="{% url 'deposit' %}">Deposit Funds</a>
+    <a href="{% url 'about' %}">About & Contact</a>
+    <a href="{% url 'inbox' %}">Inbox</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+<div class="topbar">
+    <h2>Investor Dashboard</h2>
+    <div>
+        <p><strong>Prestige Level:</strong> {{ prestige_level }}</p>
+        <p><strong>Equity Percentage:</strong> {{ equity_percentage }}%</p>
+    </div>
+    <a class="logout-btn" href="{% url 'logout' %}">Logout</a>
+</div>
+
+<!-- INVESTOR STATS -->
+<div class="stats-grid">
+    <div class="stat-box">
+        <h4>Wallet Balance</h4>
+        <p>${{ wallet.balance }}</p>
+    </div>
+    <div class="stat-box">
+        <h4>Total Shares</h4>
+        <p>{{ total_shares }}</p>
+    </div>
+    <div class="stat-box">
+        <h4>Total Invested</h4>
+        <p>${{ total_invested }}</p>
+    </div>
+    <div class="stat-box">
+        <h4>Monthly Income</h4>
+        <p>${{ monthly_income }}</p>
+    </div>
+</div>
+
+<!-- INVESTOR PROFILE -->
+<div class="card">
+    <h3>Welcome {{ user.username }}</h3>
+    <p><strong>Investor Rank:</strong>
+        {% if prestige_level <= 2 %}
+        🟤 Bronze Investor
+        {% elif prestige_level <= 4 %}
+        ⚪ Silver Investor
+        {% elif prestige_level <= 6 %}
+        🟡 Gold Investor
+        {% else %}
+        💎 Diamond Investor
+        {% endif %}
+    </p>
+
+    <hr style="border:1px solid #333; margin:15px 0;">
+
+    <p><strong>Total Holdings Value:</strong>
+    <span class="highlight">${{ total_invested }}</span></p>
+
+    <p><strong>Estimated Monthly Income:</strong>
+    <span class="highlight">${{ monthly_income }}</span></p>
+
+    <p><strong>Clan:</strong>
+    {% if user_clan %}
+        {{ user_clan.name }}
+        {% if user_role %} ({{ user_role }}) {% endif %}
+    {% else %}
+        None
+    {% endif %}
+    </p>
+
+    <p><strong>Black Card Status:</strong>
+    {% if black_card %}
+        <span class="highlight">Active</span>
+    {% else %}
+        Not Unlocked
+    {% endif %}
+    </p>
+</div>
+
+<!-- QUICK ACTIONS -->
+<div class="card">
+    <h3>Quick Actions</h3>
+    <div class="action-buttons">
+        <a href="{% url 'deposit' %}">
+            <button class="action-btn">Deposit Funds</button>
+        </a>
+        <a href="{% url 'listings' %}">
+            <button class="action-btn">Invest in Properties</button>
+        </a>
+        <a href="{% url 'portfolio' %}">
+            <button class="action-btn">View Investor Hub</button>
+        </a>
+    </div>
+</div>
+
+<!-- PLATFORM STATS -->
+<div class="card">
+    <h3>Platform Statistics</h3>
+    <p>Total Properties Available: <span class="highlight">{{ properties_count }}</span></p>
+    <p>Total Investors: <span class="highlight">{{ investors_count }}</span></p>
+    <p>Total Capital Raised: <span class="highlight">${{ total_capital|floatformat:2 }}</span></p>
+    <p>Staff Count: <span class="highlight">{{ staff_count }}</span></p>
+</div>
+
+<!-- INBOX -->
+<div class="card">
+  <h3>Inbox</h3>
+  <table class="inbox-table">
+    <tr>
+      <th>Subject</th>
+      <th>Message</th>
+      <th>Reply</th>
+    </tr>
+    {% for msg in inbox_messages %}
+    <tr>
+      <td>{{ msg.subject }}</td>
+      <td>{{ msg.body }}</td>
+      <td>
+        {% if msg.reply %}
+          <span style="color:#00ff88;">{{ msg.reply.reply_body }}</span>
+        {% else %}
+          <span style="color:#999;">Admin will get back to you soon.</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">No messages yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+</div>
+</body>
+</html>

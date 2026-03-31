@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Inbox</h2>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">Received Messages</div>
+        <ul class="list-group list-group-flush">
+            {% for msg in received_messages %}
+                <li class="list-group-item">
+                    <strong>From:</strong> {{ msg.sender.username }} <br>
+                    <strong>Subject:</strong> {{ msg.subject }} <br>
+                    <small class="text-muted">{{ msg.created_at }}</small>
+                    <p class="mt-2">{{ msg.body }}</p>
+                    <!-- Reply form -->
+                    <form method="post" action="{% url 'reply' msg.id %}" class="mt-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Reply</button>
+                    </form>
+                </li>
+            {% empty %}
+                <li class="list-group-item text-muted">No messages received.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <h2 class="text-success mb-4">Sent Messages</h2>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">Sent Messages</div>
+        <ul class="list-group list-group-flush">
+            {% for msg in sent_messages %}
+                <li class="list-group-item">
+                    <strong>To:</strong> {{ msg.recipient.username }} <br>
+                    <strong>Subject:</strong> {{ msg.subject }} <br>
+                    <small class="text-muted">{{ msg.created_at }}</small>
+                    <p class="mt-2">{{ msg.body }}</p>
+                </li>
+            {% empty %}
+                <li class="list-group-item text-muted">No messages sent.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <h2 class="text-info mb-4">Send a New Message</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post" action="{% url 'contact' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

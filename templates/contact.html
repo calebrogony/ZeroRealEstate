@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 style="color:#00ff88; margin-bottom:20px;">Contact Us</h1>
+
+{% if messages %}
+  <div style="margin-bottom:15px;">
+    {% for message in messages %}
+      <p style="color:#00ff88; font-weight:bold; background:#1f1f1f; padding:10px; border-radius:8px;">
+        {{ message }}
+      </p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div style="background:#1f1f1f; padding:25px; border-radius:16px; width:500px;">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit"
+            style="margin-top:15px; background:#00aa66; border:none; padding:12px; border-radius:8px; color:white; cursor:pointer; width:100%;">
+      Send Message
+    </button>
+  </form>
+</div>
+{% endblock %}

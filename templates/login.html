@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Zero Real Estate Holdings</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin:0;
+            background:#0f0f0f;
+            font-family:'Segoe UI',sans-serif;
+            color:white;
+            display:flex;
+        }
+        /* Sidebar */
+        .sidebar {
+            width:240px;
+            background:#181818;
+            height:100vh;
+            padding:25px;
+            box-sizing:border-box;
+        }
+        .sidebar h3 {
+            margin-bottom:30px;
+            font-size:18px;
+            line-height:1.4;
+        }
+        .sidebar a {
+            display:block;
+            padding:10px 0;
+            color:white;
+            text-decoration:none;
+            font-size:15px;
+        }
+        .sidebar a:hover {
+            color:#00ff88;
+        }
+        /* Content */
+        .content {
+            flex:1;
+            padding:35px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+        }
+        /* Login Card */
+        .card {
+            background:#1f1f1f;
+            padding:40px;
+            border-radius:16px;
+            width:400px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.3);
+            margin-bottom:30px;
+        }
+        .card h2 {
+            text-align:center;
+            margin-bottom:20px;
+            color:#00ff88;
+        }
+        label {
+            display:block;
+            margin-top:10px;
+            font-size:14px;
+            color:#ccc;
+        }
+        input {
+            width:100%;
+            padding:10px;
+            margin:8px 0;
+            border-radius:5px;
+            border:1px solid #333;
+            background:#111;
+            color:white;
+        }
+        button {
+            width:100%;
+            padding:12px;
+            background:#00aa66;
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:15px;
+            margin-top:10px;
+        }
+        button:hover {
+            background:#00cc77;
+        }
+        .links {
+            text-align:center;
+            margin-top:15px;
+        }
+        .links a {
+            text-decoration:none;
+            color:#00ff88;
+        }
+        /* About Section */
+        .about-card {
+            background:#1f1f1f;
+            padding:30px;
+            border-radius:16px;
+            max-width:800px;
+            line-height:1.6;
+        }
+        .about-card h3 {
+            color:#00ff88;
+            margin-top:0;
+        }
+        .about-card p {
+            color:#ccc;
+        }
+        .highlight {
+            color:#00ff88;
+            font-weight:bold;
+        }
+        .error-messages {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff4444;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            color: #ffaaaa;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h3>Zero Real Estate<br>Holdings</h3>
+    <a href="#">Dashboard Preview</a>
+    <a href="#">Investor Hub</a>
+    <a href="#">Listings</a>
+    <a href="#">Prestige</a>
+    <a href="#">Clan / Community</a>
+    <hr style="border:1px solid #333;">
+    <a href="#">Wallet</a>
+    <a href="#">Deposit Funds</a>
+    <a href="#">Withdraw Funds</a>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+
+    <!-- Login Card -->
+    <div class="card">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.errors %}
+                <div class="error-messages">
+                    {{ form.errors }}
+                </div>
+            {% endif %}
+
+            <label for="id_username">Full Name</label>
+            {{ form.username }}
+
+            <label for="id_password">Password</label>
+            {{ form.password }}
+
+            <button type="submit">Login</button>
+        </form>
+        <div class="links">
+            <p><a href="{% url 'password_reset' %}">Forgot Password?</a></p>
+            <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="about-card">
+        <h3>About Zero Real Estate Holdings</h3>
+        <p>
+            <span class="highlight">Zero Real Estate Holdings</span> is a next‑generation
+            investment platform designed to make property ownership accessible to everyone.
+            We combine technology, transparency, and community to create a unique experience
+            where investors can buy shares in properties, track their portfolio, and grow
+            their wealth dynamically.
+        </p>
+        <p>
+            Our system simulates real‑world investing: share prices, monthly income, and prestige
+            levels all adjust automatically as you expand your holdings. Whether you’re a beginner
+            or an experienced investor, you’ll find tools to manage your wallet, monitor your
+            investments, and connect with other members through clans and community features.
+        </p>
+        <p>
+            To unlock the full dashboard and start building your portfolio,
+            <span class="highlight">sign in</span> with your account.
+            If you’re new, register today and join our growing network of investors.
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>

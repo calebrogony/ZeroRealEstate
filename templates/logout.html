@@ -1,0 +1,14 @@
+{% extends "base_auth.html" %}
+
+{% block content %}
+<h2>Confirm Logout</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, Logout</button>
+</form>
+
+<div class="links">
+    <a href="/dashboard/">Cancel</a>
+</div>
+{% endblock %}

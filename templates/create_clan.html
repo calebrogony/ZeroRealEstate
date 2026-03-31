@@ -1,0 +1,51 @@
+<div style="
+    background:#0a0f1c;
+    min-height:100vh;
+    padding:40px;
+    font-family:Consolas, monospace;
+    color:#d0faff;
+">
+
+    <h1 style="
+        color:#00f7ff;
+        letter-spacing:3px;
+        border-bottom:2px solid #00f7ff;
+        padding-bottom:15px;
+        text-transform:uppercase;
+    ">
+        Create Clan
+    </h1>
+
+    <form method="POST" style="margin-top:30px;">
+        {% csrf_token %}
+
+        <label style="color:#00ff88;">Clan Name</label><br><br>
+
+        <input type="text" name="name" required
+            style="
+                background:#111827;
+                border:1px solid #00f7ff;
+                color:#d0faff;
+                padding:10px;
+                width:300px;
+                font-family:Consolas, monospace;
+            "
+        >
+
+        <br><br>
+
+        <button type="submit"
+            style="
+                background:transparent;
+                border:1px solid #00ff88;
+                color:#00ff88;
+                padding:10px 20px;
+                text-transform:uppercase;
+                cursor:pointer;
+            "
+        >
+            Deploy Clan
+        </button>
+    </form>
+
+</div>

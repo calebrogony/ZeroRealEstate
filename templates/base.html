@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>zero real estate holdings </title>
+</head>
+
+<body>
+
+<style>
+body {
+    margin: 0;
+    background-color: #0f0f0f;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ===== NAVBAR ===== */
+
+.warzone-nav {
+    background: #111;
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #00ff88;
+}
+
+.nav-left a,
+.nav-right a {
+    color: #ccc;
+    text-decoration: none;
+    margin-right: 18px;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+
+.nav-left a:hover,
+.nav-right a:hover {
+    color: #00ff88;
+}
+
+.logout {
+    color: #ff4d4d !important;
+}
+
+.username {
+    color: #00ff88;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+/* ===== PAGE CONTENT ===== */
+
+.content-wrapper {
+    padding: 40px 60px;
+}
+
+/* ===== HEADINGS ===== */
+
+.warzone-title {
+    color: #ffffff;
+    font-size: 32px;
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+}
+
+/* ===== PROPERTY CARDS ===== */
+
+.warzone-card {
+    background: #1a1a1a;
+    border: 1px solid #222;
+    border-left: 4px solid #00ff88;
+    padding: 25px;
+    margin-bottom: 30px;
+    transition: 0.3s ease;
+}
+
+.warzone-card:hover {
+    background: #222;
+    transform: scale(1.01);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.location {
+    color: #888;
+}
+
+.stat {
+    margin: 8px 0;
+}
+
+.highlight {
+    color: #00ff88;
+}
+
+.description {
+    margin-top: 15px;
+    color: #aaa;
+}
+
+/* ===== BUTTON ===== */
+
+.warzone-btn {
+    display: inline-block;
+    padding: 12px 22px;
+    background: #00ff88;
+    color: #000 !important;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: 0.3s ease;
+}
+
+.warzone-btn:hover {
+    background: #00cc6a;
+    transform: scale(1.05);
+}
+
+.sold-out {
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+/* ===== BADGE ===== */
+.inbox-badge {
+    background:#e60023;
+    color:white;
+    font-size:12px;
+    padding:2px 6px;
+    border-radius:12px;
+    position:absolute;
+    right:-20px;
+    top:-5px;
+}
+</style>
+
+
+<nav class="warzone-nav">
+    {% if user.is_authenticated %}
+
+        <div class="nav-left">
+            <span class="username">Commander {{ user.username }}</span>
+
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'portfolio' %}">Investor Hub</a>
+            <a href="{% url 'listings' %}">Listings</a>
+            <a href="{% url 'prestige' %}">Prestige</a>
+            <a href="{% url 'community' %}">Clan</a>
+
+            <!-- ✅ Inbox with badge -->
+         <a href="{% url 'inbox' %}" style="position:relative;">
+    Inbox
+    {% if unread_count > 0 %}
+        <span class="inbox-badge">{{ unread_count }}</span>
+    {% endif %}
+</a>
+
+        </div>
+
+        <div class="nav-right">
+            <a href="{% url 'logout' %}" class="logout">Logout</a>
+        </div>
+
+    {% else %}
+        <div class="nav-left">
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        </div>
+    {% endif %}
+</nav>
+
+
+<div class="content-wrapper">
+    {% block content %}
+    {% endblock %}
+</div>
+
+</body>
+</html>

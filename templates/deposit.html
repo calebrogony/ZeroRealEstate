@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Deposit - Zero Real Estate</title>
+<style>
+body {
+  margin:0;
+  background:#0f0f0f;
+  font-family:'Segoe UI';
+  color:white;
+  display:flex;
+}
+.sidebar {
+  width:220px;
+  background:#181818;
+  height:100vh;
+  padding:20px;
+}
+.sidebar a {
+  display:block;
+  padding:10px 0;
+  color:white;
+  text-decoration:none;
+}
+.sidebar a:hover {
+  color:#00ff88;
+}
+.content {
+  flex:1;
+  padding:30px;
+}
+.card {
+  background:#1f1f1f;
+  padding:25px;
+  border-radius:16px;
+  width:420px;
+  margin-bottom:20px;
+}
+.highlight {
+  color:#00ff88;
+  font-weight:bold;
+}
+input, textarea {
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  border:none;
+}
+button {
+  margin-top:15px;
+  background:#00aa66;
+  border:none;
+  padding:10px;
+  border-radius:8px;
+  color:white;
+  cursor:pointer;
+  width:100%;
+}
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+th, td {
+  padding:8px;
+  border-bottom:1px solid #333;
+  text-align:left;
+}
+th {
+  color:#00ff88;
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h3>ZERO REAL ESTATE HOLDINGS </h3>
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <a href="{% url 'portfolio' %}">Portfolio</a>
+  <a href="{% url 'listings' %}">Listings</a>
+  <a href="{% url 'prestige' %}">Prestige</a>
+  <a href="{% url 'community' %}">Clan / Community</a>
+  <hr style="border:1px solid #333;">
+  <a href="{% url 'wallet' %}">Wallet</a>
+  <a href="{% url 'deposit' %}">Deposit</a>
+</div>
+
+<div class="content">
+  <h2>Deposit Funds</h2>
+
+  <div class="card">
+    <p>
+      Wallet Balance:
+      <span class="highlight">
+        ${{ wallet.balance }}
+      </span>
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>M-Pesa Paybill</h3>
+    <p>Business Number: <strong>542542</strong></p>
+    <p>Account Number: <strong>ZERO123</strong></p>
+    <p>Use the account number above when sending money via M-Pesa.</p>
+  </div>
+
+  <div class="card">
+    <h3>Instant STK Push (Demo)</h3>
+    {% if messages %}
+      {% for message in messages %}
+        <p style="color:#00ff88;">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <label>M-Pesa Phone Number</label>
+      <input type="text" name="phone" placeholder="07XXXXXXXX" required>
+
+      <label>Deposit Amount</label>
+      <input type="number" name="amount" required>
+
+      <button>Send STK Push</button>
+    </form>
+  </div>
+
+  <!-- ✅ Ledger Section -->
+  <div class="card">
+    <h3>Transaction Ledger</h3>
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Description</th>
+      </tr>
+      {% for entry in ledger_entries %}
+      <tr>
+        <td>{{ entry.timestamp|date:"Y-m-d H:i" }}</td>
+        <td>{{ entry.transaction_type }}</td>
+        <td>${{ entry.amount }}</td>
+        <td>{{ entry.description }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">No transactions yet.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <!-- ✅ Transaction Verification -->
+  <div class="card">
+    <h3>Verify Transaction</h3>
+    <form method="POST" action="{% url 'verify_transaction' %}">
+      {% csrf_token %}
+      <label>Transaction ID</label>
+      <input type="text" name="transaction_id" placeholder="Enter M-Pesa Transaction ID" required>
+
+      <label>Notes (optional)</label>
+      <textarea name="notes" placeholder="Any extra info..."></textarea>
+
+      <button>Submit for Verification</button>
+    </form>
+  </div>
+
+</div>
+</body>
+</html>

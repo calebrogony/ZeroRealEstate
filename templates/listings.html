@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Listings - Zero RE</title>
+<meta charset="UTF-8">
+<style>
+body {
+    margin:0;
+    background:#0f0f0f; /* warzone dark background */
+    font-family:'Segoe UI',sans-serif;
+    color:white;
+    display:flex;
+}
+.sidebar {
+    width:220px;
+    background:#181818;
+    height:100vh;
+    padding:20px;
+}
+.sidebar a {
+    display:block;
+    padding:10px 0;
+    color:white;
+    text-decoration:none;
+}
+.sidebar a:hover {
+    color:#00ff88; /* neon hover */
+}
+.content {
+    flex:1;
+    padding:30px;
+}
+.property, .add-listing {
+    background:#1f1f1f;
+    padding:20px;
+    border-radius:14px;
+    margin-bottom:20px;
+    border:1px solid #333;
+}
+.property h3, .add-listing h3 {
+    color:#00ff88; /* neon headings */
+}
+.buy-btn {
+    background:#00aa66;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+}
+.buy-btn:hover {
+    background:#00cc77;
+}
+input, textarea {
+    padding:8px;
+    border-radius:6px;
+    border:none;
+    width:100%;
+    margin-top:8px;
+    background:#2a2a2a;
+    color:white;
+}
+.add-btn {
+    background:#00ff88;
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    color:black;
+    cursor:pointer;
+    margin-top:10px;
+    font-weight:bold;
+}
+.add-btn:hover {
+    background:#00cc77;
+}
+.property-images {
+    display:flex;
+    gap:10px;
+    margin:15px 0;
+}
+.property-images img {
+    width:150px;
+    height:100px;
+    object-fit:cover;
+    border-radius:8px;
+    border:1px solid #333;
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h3>Zero RE</h3>
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'portfolio' %}">Investor Hub</a>
+    <a href="{% url 'listings' %}">Listings</a>
+    <a href="{% url 'prestige' %}">Prestige</a>
+    <a href="{% url 'community' %}">Clan / Community</a>
+    <hr style="border:1px solid #333;">
+    <a href="{% url 'wallet' %}">Wallet</a>
+    <a href="{% url 'deposit' %}">Deposit</a>
+</div>
+
+<div class="content">
+    <h2 style="color:#00ff88;">Available Properties</h2>
+
+    <!-- Success / Error Messages -->
+    {% if messages %}
+      {% for message in messages %}
+        <div style="background:#003322; color:#00ff88; padding:10px; border-radius:8px; margin-bottom:15px;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Add Listing Form -->
+    <div class="add-listing">
+        <h3>Add New Property (Pending Approval)</h3>
+        <form method="POST" action="{% url 'add_listing' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Property Name" required>
+            <input type="text" name="location" placeholder="Location" required>
+            <textarea name="description" placeholder="Description" required></textarea>
+            <input type="number" name="price_per_share" placeholder="Price Per Share" required>
+            <input type="number" name="available_shares" placeholder="Available Shares" required>
+            <input type="number" name="total_shares" placeholder="Total Shares" required>
+            <input type="number" step="0.01" name="monthly_dividend_per_share" placeholder="Dividend Rate (%)" required>
+            <!-- Upload up to 3 images -->
+            <input type="file" name="image1" accept="image/*">
+            <input type="file" name="image2" accept="image/*">
+            <input type="file" name="image3" accept="image/*">
+            <button class="add-btn" type="submit">Submit for Approval</button>
+        </form>
+    </div>
+
+    {% for property in properties %}
+    <div class="property">
+        <h3>{{ property.name }}</h3>
+        <p>{{ property.location }}</p>
+        <p>{{ property.description }}</p>
+        <p>Price Per Share: <strong>${{ property.price_per_share }}</strong></p>
+        <p>Available Shares: <strong>{{ property.available_shares }}</strong></p>
+        <p>Total Shares: <strong>{{ property.total_shares }}</strong></p>
+        <p>Total Value: <strong>${{ property.total_value }}</strong></p>
+        <p>Dividend Rate: <strong>{{ property.monthly_dividend_per_share|floatformat:2 }}%</strong></p>
+
+        <!-- Property Images -->
+        <div class="property-images">
+            {% if property.image1 %}
+                <a href="{{ property.image1.url }}" target="_blank">
+                    <img src="{{ property.image1.url }}" alt="{{ property.name }}">
+                </a>
+            {% endif %}
+            {% if property.image2 %}
+                <a href="{{ property.image2.url }}" target="_blank">
+                    <img src="{{ property.image2.url }}" alt="{{ property.name }}">
+                </a>
+            {% endif %}
+            {% if property.image3 %}
+                <a href="{{ property.image3.url }}" target="_blank">
+                    <img src="{{ property.image3.url }}" alt="{{ property.name }}">
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Buy Shares Form -->
+        <form method="POST" action="{% url 'buy_shares' property.id %}">
+            {% csrf_token %}
+            <input type="number" name="shares" placeholder="Shares">
+            <button class="buy-btn">Buy Shares</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
